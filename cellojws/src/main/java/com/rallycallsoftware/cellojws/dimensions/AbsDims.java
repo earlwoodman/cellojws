@@ -202,6 +202,10 @@ public class AbsDims implements Dimensions, Serializable {
 	 * @param target
 	 */
 	public void merge(AbsDims target) {
+		if (target == null) {
+			return;
+		}
+		
 		left = left < target.left ? left : target.left;
 		top = top < target.top ? top : target.top;
 		right = right > target.right ? right : target.right;

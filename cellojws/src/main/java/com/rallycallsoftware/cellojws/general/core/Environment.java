@@ -29,7 +29,7 @@ import com.rallycallsoftware.cellojws.general.work.Work;
 import com.rallycallsoftware.cellojws.token.CommandToken;
 import com.rallycallsoftware.cellojws.windowing.WindowManager;
 
-public class Environment extends Thread
+public abstract class Environment extends Thread
 		implements Progress, MouseListener, KeyListener, MouseWheelListener, MouseMotionListener {
 
 	/**
@@ -308,6 +308,7 @@ public class Environment extends Thread
 
 		synchronized (this) {
 			running = true;
+			initialize();
 		}
 
 		while (true) {
@@ -715,4 +716,9 @@ public class Environment extends Thread
 		return offWhite;
 	}
 
+	public boolean isRunning() {
+		return running;
+	}
+
+	public abstract void initialize();
 }

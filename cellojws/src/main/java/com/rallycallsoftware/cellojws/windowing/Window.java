@@ -65,6 +65,8 @@ public abstract class Window extends Control {
 	}
 
 	public void render(final Graphics graphics, final boolean mousedown) {
+		graphics.drawSolidRect(getScreenDims(), getBackground());
+		
 		final AbsDims titleDims = calculateTitleBarDims();
 
 		final Image dropShadow = environment.getDropShadowImage();
@@ -110,6 +112,10 @@ public abstract class Window extends Control {
 	 * @return
 	 */
 	private void renderTitleBar(final Graphics graphics, final AbsDims titleDims) {
+		if (titleDims == null) {
+			return;
+		}
+		
 		graphics.drawGradientRect(darkBlue, darkerBlue, titleDims.getTopHalf(), Direction.Downward);
 		graphics.drawGradientRect(darkerBlue, darkBlue, titleDims.getBottomHalf(), Direction.Downward);
 
