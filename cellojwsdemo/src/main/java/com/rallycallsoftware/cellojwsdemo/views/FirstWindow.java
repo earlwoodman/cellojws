@@ -12,13 +12,14 @@ import com.rallycallsoftware.cellojws.token.CommandToken;
 import com.rallycallsoftware.cellojws.windowing.Window;
 import com.rallycallsoftware.cellojwsdemo.controllers.FirstWindowController;
 import com.rallycallsoftware.cellojwsdemo.controllers.MainController;
+import com.rallycallsoftware.cellojwsdemo.models.FirstWindowBean;
 
-public class FirstWindow extends Window {
+public class FirstWindow extends Window<FirstWindowBean> {
 
 	private Button clickMe;
 	
-	public FirstWindow(AbsDims dim) {
-		super(dim, null);
+	public FirstWindow(final AbsDims dim, final FirstWindowBean bean) {
+		super(dim, null, bean);
 		
 		setBackground(Color.BLUE.brighter());
         setTitle("First Window");
@@ -27,7 +28,7 @@ public class FirstWindow extends Window {
 		
 		final CommandToken<?> clickMeToken = new CommandToken<>(FirstWindowController::clickMe);
 		final Point clickMePt = new Point(halfInch, halfInch);
-		clickMe = new BasicButton(SmallButtonType.getInstance(), "Click Me", null, clickMePt);
+		clickMe = new BasicButton(SmallButtonType.getInstance(), "Click Me", clickMeToken, clickMePt);
 		addControl(clickMe);
 	}
 
@@ -44,6 +45,16 @@ public class FirstWindow extends Window {
 	@Override
 	public CommandToken<?> processKeyPress(KeyEvent keyEvent) {
 		return null;
+	}
+
+	@Override
+	public void refresh() {
+
+	}
+
+	@Override
+	public boolean validate() {
+		return false;
 	}
 
 }

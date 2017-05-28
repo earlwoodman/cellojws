@@ -5,7 +5,6 @@ import com.rallycallsoftware.cellojws.controls.button.RadioButtonType;
 import com.rallycallsoftware.cellojws.controls.button.TabButton;
 import com.rallycallsoftware.cellojws.controls.listbox.ListBox;
 import com.rallycallsoftware.cellojws.general.core.Environment;
-import com.rallycallsoftware.cellojws.stock.DemoNotice;
 import com.rallycallsoftware.cellojws.token.CommandToken;
 
 public class ControlController extends Controller {
@@ -65,10 +64,6 @@ public class ControlController extends Controller {
 		token.getPayload().down();
 	}
 
-	public static void exitDemo(final CommandToken<DemoNotice> token) {
-		token.getPayload().exitDemo();
-	}
-
 	public static void exitGame(final CommandToken<?> token) {
 		Environment.getEnvironment().stopRunning();
 	}
@@ -86,14 +81,6 @@ public class ControlController extends Controller {
 	}
 
 	public static void save(final CommandToken<?> token) {
-
-	}
-
-	public static void showEvents(final CommandToken<?> token) {
-
-	}
-
-	public static void showAbout(final CommandToken<?> token) {
 
 	}
 

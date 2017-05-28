@@ -26,7 +26,6 @@ import com.rallycallsoftware.cellojws.general.image.Image;
 import com.rallycallsoftware.cellojws.logging.WorkerLog;
 import com.rallycallsoftware.cellojws.special.Tooltip;
 import com.rallycallsoftware.cellojws.token.CommandToken;
-import com.rallycallsoftware.cellojws.tutorial.TutorialItem;
 import com.rallycallsoftware.cellojws.windowing.DragInfo;
 import com.rallycallsoftware.cellojws.windowing.Window;
 import com.rallycallsoftware.cellojws.windowing.WindowManager;
@@ -57,8 +56,6 @@ public class Control implements ControlContainer {
 	private FontInfo fontInfo = null;
 
 	private FontInfo disabledFontInfo = null;
-
-	private TutorialItem tutorialItem;
 
 	private Image image = null;
 
@@ -415,14 +412,6 @@ public class Control implements ControlContainer {
 
 	public String getKey(final Control control) {
 		return componentControlNames.get(componentControls.indexOf(control));
-	}
-
-	public void setTutorialItem(final TutorialItem tutorialItem_) {
-		tutorialItem = tutorialItem_;
-	}
-
-	public TutorialItem getTutorialItem() {
-		return tutorialItem;
 	}
 
 	public void addPolygon(final PolygonControl polygon) {

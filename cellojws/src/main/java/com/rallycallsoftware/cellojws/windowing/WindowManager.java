@@ -35,10 +35,7 @@ import com.rallycallsoftware.cellojws.general.Justification;
 import com.rallycallsoftware.cellojws.general.SerializableLock;
 import com.rallycallsoftware.cellojws.logging.WorkerLog;
 import com.rallycallsoftware.cellojws.special.Tooltip;
-import com.rallycallsoftware.cellojws.stock.Screen;
 import com.rallycallsoftware.cellojws.token.CommandToken;
-import com.rallycallsoftware.cellojws.tutorial.TutorialDialog;
-import com.rallycallsoftware.cellojws.tutorial.TutorialItem;
 
 public class WindowManager {
 
@@ -48,14 +45,12 @@ public class WindowManager {
 
 	private final SerializableLock windowLock = new SerializableLock();
 
-	private final List<Window> windows = new ArrayList<Window>();
+	private final List<Window<?>> windows = new ArrayList<>();
 
 	// Special windows are always drawn on top of regular windows
 	// and can be tutorial windows, tool tips, etc.
 	//
 	private Tooltip tooltip;
-
-	private TutorialDialog tutorialDialog;
 
 	private ProgressBar systemProgress;
 
@@ -68,8 +63,6 @@ public class WindowManager {
 	private boolean showProgress = false;
 	//
 	// End of special windows
-
-	private TutorialItem tutorialItem = null;
 
 	private static Graphics graphics = null;
 
@@ -150,7 +143,7 @@ public class WindowManager {
 		}
 	}
 
-	public void addWindow(final Window window) {
+	public void addWindow(final Window<?> window) {
 		synchronized (windowLock) {
 			if (!windows.contains(window)) {
 				if (window != null) {
@@ -168,7 +161,7 @@ public class WindowManager {
 
 	public void render() {
 		synchronized (windowLock) {
-			for (Window window : windows) {
+			for (final Window<?> window : windows) {
 				window.render(graphics, mousedown);
 			}
 		}
@@ -176,8 +169,6 @@ public class WindowManager {
 		// Now render the tooltip, if there is one.
 		synchronized (specialWindowLock) {
 			renderTooltip();
-
-			renderTutorial();
 
 			renderSystemProgress();
 
@@ -191,15 +182,6 @@ public class WindowManager {
 	private void renderSystemError() {
 		if (systemError.getText() != null && !systemError.getText().equals("")) {
 			systemError.render(graphics, false);
-		}
-	}
-
-	private void renderTutorial() {
-		if (tutorialItem != null) {
-			tutorialDialog = new TutorialDialog(tutorialItem);
-			tutorialDialog.render(graphics, false);
-		} else {
-			tutorialDialog = null;
 		}
 	}
 
@@ -246,12 +228,12 @@ public class WindowManager {
 		}
 	}
 
-	private List<Window> getWindowsReversed() {
+	private List<Window<?>> getWindowsReversed() {
 		// Reverse the windows and go through them backwards
-		final List<Window> reversed = new ArrayList<Window>();
+		final List<Window<?>> reversed = new ArrayList<>();
 
 		synchronized (windowLock) {
-			for (Window window : windows) {
+			for (final Window<?> window : windows) {
 				reversed.add(0, window);
 			}
 		}
@@ -314,13 +296,6 @@ public class WindowManager {
 					// if the return value was not null, it should have been a
 					// pointer to token anyway.
 					clickThroughChain(x, y, control.getParent(), token);
-				}
-				if (control.getTutorialItem() != null) {
-					setTutorialItem(control.getTutorialItem());
-					control.getTutorialItem().setShown(true);
-					control.setTutorialItem(null);
-				} else {
-					tutorialItem = null;
 				}
 			}
 			return token;
@@ -433,12 +408,12 @@ public class WindowManager {
 	 * @return
 	 */
 	public Control findControlAt(final Collection<Control> ignore, final int x, final int y) {
-		final List<Window> reversed = getWindowsReversed();
+		final List<Window<?>> reversed = getWindowsReversed();
 
 		lastFound = null;
 
 		synchronized (windowLock) {
-			for (Window window : reversed) {
+			for (final Window<?> window : reversed) {
 				final Control clicked = findControlInControl(window.getControlsReversed(), ignore,
 						x - window.getDimensions().left, y - window.getDimensions().top);
 				if (clicked != null) {
@@ -550,7 +525,7 @@ public class WindowManager {
 		final Collection<Control> ret = new ArrayList<Control>();
 
 		synchronized (windowLock) {
-			for (final Window window : windows) {
+			for (final Window<?> window : windows) {
 				ret.addAll(window.getControlsRecursive());
 			}
 		}
@@ -635,26 +610,18 @@ public class WindowManager {
 		}
 	}
 
-	public TutorialItem getTutorialItem() {
-		return tutorialItem;
-	}
-
-	public void setTutorialItem(TutorialItem tutorialItem) {
-		this.tutorialItem = tutorialItem;
-	}
-
 	public void setProgressMessage(final String message) {
 		systemProgress.setText(message);
 		systemProgressBack.setText(message);
 
 	}
 
-	public Screen getScreen(Class<?> class1) {
+	public Window<?> getWindow(Class<?> class1) {
 		synchronized (windowLock) {
 			for (ControlContainer window : windows) {
 				if (window.getClass() == class1) {
-					if (window instanceof Screen) {
-						return (Screen) window;
+					if (window instanceof Window) {
+						return (Window<?>)window;
 					}
 				}
 			}
@@ -663,7 +630,7 @@ public class WindowManager {
 		return null;
 	}
 
-	public void showPopup(final Window popup) {
+	public void showPopup(final Window<?> popup) {
 		popupCount++;
 		popup.setPopup(true);
 		addWindow(popup);
@@ -734,7 +701,7 @@ public class WindowManager {
 
 	public <T> void removeWindows(Class<T> clazz) {
 		synchronized (windowLock) {
-			final List<Window> windowsToRemove = windows.stream().filter(x -> x.getClass() == clazz)
+			final List<Window<?>> windowsToRemove = windows.stream().filter(x -> x.getClass() == clazz)
 					.collect(Collectors.toList());
 
 			windows.removeAll(windowsToRemove);

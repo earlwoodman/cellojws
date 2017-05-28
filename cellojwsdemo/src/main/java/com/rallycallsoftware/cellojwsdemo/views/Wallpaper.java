@@ -7,12 +7,13 @@ import com.rallycallsoftware.cellojws.dimensions.AbsDims;
 import com.rallycallsoftware.cellojws.token.CommandToken;
 import com.rallycallsoftware.cellojws.windowing.Window;
 import com.rallycallsoftware.cellojwsdemo.controllers.MainController;
+import com.rallycallsoftware.cellojwsdemo.models.WallpaperBean;
 
-public class Wallpaper extends Window {
+public class Wallpaper extends Window<WallpaperBean> {
 
 	
-	public Wallpaper(final AbsDims dim) {
-		super(dim, null);
+	public Wallpaper(final AbsDims dim, final WallpaperBean bean) {
+		super(dim, null, bean);
 		
 		setBackground(Color.GRAY.darker());
 	}
@@ -30,6 +31,16 @@ public class Wallpaper extends Window {
 	@Override
 	public CommandToken<?> processKeyPress(KeyEvent keyEvent) {
 		return null;
+	}
+
+	@Override
+	public void refresh() {
+		
+	}
+
+	@Override
+	public boolean validate() {
+		return false;
 	}
 
 }

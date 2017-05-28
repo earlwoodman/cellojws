@@ -8,13 +8,14 @@ import com.rallycallsoftware.cellojws.dimensions.AbsDims;
 import com.rallycallsoftware.cellojws.token.CommandToken;
 import com.rallycallsoftware.cellojws.windowing.Window;
 import com.rallycallsoftware.cellojwsdemo.controllers.MainController;
+import com.rallycallsoftware.cellojwsdemo.models.SecondWindowBean;
 
-public class SecondWindow extends Window {
+public class SecondWindow extends Window<SecondWindowBean> {
 
 	private ListBox months;
 	
-	public SecondWindow(AbsDims dim) {
-		super(dim, null);
+	public SecondWindow(final AbsDims dim, final SecondWindowBean bean) {
+		super(dim, null, bean);
 		
 		setBackground(Color.YELLOW.darker());
         setTitle("Second Window");
@@ -40,6 +41,16 @@ public class SecondWindow extends Window {
 	@Override
 	public CommandToken<?> processKeyPress(KeyEvent keyEvent) {
 		return null;
+	}
+
+	@Override
+	public void refresh() {
+		
+	}
+
+	@Override
+	public boolean validate() {
+		return false;
 	}
 
 }

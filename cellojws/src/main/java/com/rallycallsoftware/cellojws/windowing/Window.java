@@ -8,6 +8,7 @@
 package com.rallycallsoftware.cellojws.windowing;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.List;
@@ -15,14 +16,18 @@ import java.util.List;
 import com.rallycallsoftware.cellojws.adapter.Graphics;
 import com.rallycallsoftware.cellojws.controls.Control;
 import com.rallycallsoftware.cellojws.controls.DropDownList;
+import com.rallycallsoftware.cellojws.controls.Label;
 import com.rallycallsoftware.cellojws.controls.Gradient.Direction;
+import com.rallycallsoftware.cellojws.controls.button.BasicButton;
+import com.rallycallsoftware.cellojws.controls.button.Button;
+import com.rallycallsoftware.cellojws.controls.button.SmallButtonType;
 import com.rallycallsoftware.cellojws.dimensions.AbsDims;
 import com.rallycallsoftware.cellojws.general.FontInfo;
 import com.rallycallsoftware.cellojws.general.core.Environment;
 import com.rallycallsoftware.cellojws.general.image.Image;
 import com.rallycallsoftware.cellojws.token.CommandToken;
 
-public abstract class Window extends Control {
+public abstract class Window<T extends WindowBean> extends Control {
 	private static final Color darkBlue = Environment.getDarkBlue();
 
 	private static final Color darkerBlue = new Color(42, 54, 65);
@@ -37,9 +42,13 @@ public abstract class Window extends Control {
 
 	private AbsDims shrunkDims;
 
-	public Window(final AbsDims dim, final Image backgrdImage) {
+	private WindowBean windowBean;
+	
+	public Window(final AbsDims dim, final Image backgrdImage, final T bean) {
 		super(dim, null);
 
+		windowBean = bean;
+		
 		if (backgrdImage != null) {
 			setImage(backgrdImage);
 
@@ -222,5 +231,25 @@ public abstract class Window extends Control {
 	public void setFocus(Control focus) {
 		this.focus = focus;
 	}
+
+	public WindowBean getWindowBean() {
+		return windowBean;
+	}
+
+	public Label createLabel(final AbsDims dims, final String text) {
+		final Label label = new Label(dims, text);
+		addControl(label);
+		return label;
+	}
+
+	public Button createSmallButton(final String caption, final CommandToken<?> token, final Point pos) {
+		final Button button = new BasicButton(SmallButtonType.getInstance(), caption, token, pos);
+		addControl(button);
+		return button;
+	}
+
+	public abstract void refresh();
+
+	public abstract boolean validate();
 
 }

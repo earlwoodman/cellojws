@@ -1,23 +1,17 @@
 package com.rallycallsoftware.cellojws.general.core;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.AnnotatedType;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 import com.rallycallsoftware.cellojws.controls.CompletionCallback;
-import com.rallycallsoftware.cellojws.general.Event;
-import com.rallycallsoftware.cellojws.general.image.Image;
+import com.rallycallsoftware.cellojws.dimensions.AbsDims;
 import com.rallycallsoftware.cellojws.logging.WorkerLog;
-import com.rallycallsoftware.cellojws.stock.DemoNotice;
-import com.rallycallsoftware.cellojws.stock.EventInfoScreen;
-import com.rallycallsoftware.cellojws.stock.KenBurnsScreen;
-import com.rallycallsoftware.cellojws.stock.LogoScreen;
-import com.rallycallsoftware.cellojws.stock.Screen;
 import com.rallycallsoftware.cellojws.token.CommandToken;
 import com.rallycallsoftware.cellojws.windowing.Window;
+import com.rallycallsoftware.cellojws.windowing.WindowBean;
 
 public abstract class ScreenFactoryDispatcher implements CompletionCallback {
-
-	private Window panZoomScreen;
 
 	public ScreenFactoryDispatcher() {
 
@@ -41,80 +35,60 @@ public abstract class ScreenFactoryDispatcher implements CompletionCallback {
 		environment.setTutorialMode(false);
 	}
 
-	public void showDemoNotice() {
-		final Environment environment = Environment.getEnvironment();
-		final DemoNotice screen = (DemoNotice) getScreen(DemoNotice.class, null);
-		environment.getWindowManager().showPopup(screen);
-	}
-
 	public abstract void refresh();
 
-	public void showCompanyLogo() {
-		final Environment environment = Environment.getEnvironment();
-		environment.getWindowManager().addWindow(getScreen(LogoScreen.class, new CompletionCallback() {
+	public <T extends WindowBean, U extends Window<T>> Window<T> getScreen(final Class<U> class1, final T bean, final AbsDims dims) {
+		
+		final Constructor<?> ctor = findWindowConstructor(class1);
 
-			@Override
-			public void completed() {
-				showOpeningVideo();
+		if (ctor != null) 
+		{
+			try {
+				// This is a safe cast, since U extends Window<T> and class1 is a Class<U>.
+				@SuppressWarnings("unchecked")
+				Window<T> window = (Window<T>)ctor.newInstance(dims, bean);
+				return window;
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
 			}
-
-		}));
+		}
+		
+		return null;
 	}
 
-	public void showOpeningVideo() {
-		final Environment environment = Environment.getEnvironment();
-		environment.getWindowManager().removeWindow(environment.getWindowManager().getScreen(LogoScreen.class));
-		environment.getWindowManager().addWindow(panZoomScreen);
-		((KenBurnsScreen) panZoomScreen).start();
-	}
-
-	public void preloadPanZoomScreen() {
-		final Map<String, Object> payload = new HashMap<String, Object>();
-		payload.put("overlay", "/Graphics/Overlay.png");
-		payload.put("file", "/Graphics/intro.anim");
-		payload.put("completionCallback", new CompletionCallback() {
-			@Override
-			public void completed() {
-				startOver();
+	private <U> Constructor<?> findWindowConstructor(Class<U> class1) {
+		
+		for (final Constructor<?> ctor : class1.getConstructors())
+		{
+			final AnnotatedType[] types = ctor.getAnnotatedParameterTypes();
+			if (types.length == 2)
+			{
+				try {
+					if (Class.forName(types[0].getType().getTypeName()) == AbsDims.class
+							&& WindowBean.class.isAssignableFrom(Class.forName(types[1].getType().getTypeName())))
+					{
+						return ctor;
+					}
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-		});
-
-		// Load this screen. We'll need it after the logo screen is shown.
-		panZoomScreen = getScreen(KenBurnsScreen.class, payload);
-	}
-
-	public <T> Screen getScreen(Class<?> class1, T payload) {
-		Screen screen = null;
-		if (class1 == KenBurnsScreen.class) {
-			@SuppressWarnings("unchecked")
-			final Map<String, Object> mapPayload = (Map<String, Object>) payload;
-			screen = new KenBurnsScreen((CompletionCallback) mapPayload.get("completionCallback"),
-					(String) mapPayload.get("file"), (String) mapPayload.get("overlay"));
 		}
-		if (class1 == LogoScreen.class) {
-			screen = new LogoScreen((CompletionCallback) payload);
-		}
-
-		return screen;
+		
+		return null;
 	}
-
-	public abstract Screen getScreen(Class<?> class1);
 
 	private ScreenFactoryDispatcher screenFactoryDispatcher;
 
 	public ScreenFactoryDispatcher getScreenFactoryDispatcher() {
 		return screenFactoryDispatcher;
-	}
-
-	public void showEventScreen(final Event event) {
-		Image logo = null;
-
-		final Map<String, Object> payload = new HashMap<>();
-		payload.put("event", event);
-		payload.put("logo", logo);
-
-		final Screen screen = getScreen(EventInfoScreen.class, payload);
-		Environment.getEnvironment().getWindowManager().showPopup(screen);
 	}
 
 }
