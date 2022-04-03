@@ -6,7 +6,8 @@ import com.rallycallsoftware.cellojws.adapter.Graphics;
 import com.rallycallsoftware.cellojws.dimensions.AbsDims;
 import com.rallycallsoftware.cellojws.general.image.Image;
 
-public interface KBCommand {
+public interface KBCommand
+{
 
 	void setImage(Image image);
 

@@ -1,6 +1,7 @@
 package com.rallycallsoftware.cellojws.controls.listbox;
 
-public class IncorrectButtonTypeException extends RuntimeException {
+public class IncorrectButtonTypeException extends RuntimeException
+{
 
 	/**
 	 * 

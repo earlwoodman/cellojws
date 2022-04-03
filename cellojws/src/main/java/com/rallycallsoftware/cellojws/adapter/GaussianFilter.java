@@ -4,19 +4,22 @@
 
 package com.rallycallsoftware.cellojws.adapter;
 
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.Kernel;
 
-public class GaussianFilter extends ConvolveFilter {
+public class GaussianFilter extends ConvolveFilter
+{
 
 	static final long serialVersionUID = 5377089073023183684L;
 
-	protected float radius;
-	protected Kernel kernel;
+	protected float		radius;
+	protected Kernel	kernel;
 
 	/**
 	 * Construct a Gaussian filter
 	 */
-	public GaussianFilter() {
+	public GaussianFilter()
+	{
 		this(2);
 	}
 
@@ -26,18 +29,20 @@ public class GaussianFilter extends ConvolveFilter {
 	 * @param radius
 	 *            blur radius in pixels
 	 */
-	public GaussianFilter(float radius) {
+	public GaussianFilter(float radius)
+	{
 		setRadius(radius);
 	}
 
 	/**
-	 * Set the radius of the kernel, and hence the amount of blur. The bigger
-	 * the radius, the longer this filter will take.
+	 * Set the radius of the kernel, and hence the amount of blur. The bigger the radius, the longer this filter will
+	 * take.
 	 * 
 	 * @param radius
 	 *            the radius of the blur in pixels.
 	 */
-	public void setRadius(float radius) {
+	public void setRadius(float radius)
+	{
 		this.radius = radius;
 		kernel = makeKernel(radius);
 	}
@@ -47,11 +52,13 @@ public class GaussianFilter extends ConvolveFilter {
 	 * 
 	 * @return the radius
 	 */
-	public float getRadius() {
+	public float getRadius()
+	{
 		return radius;
 	}
 
-	public BufferedImage filter(BufferedImage src, BufferedImage dst) {
+	public BufferedImage filter(BufferedImage src, BufferedImage dst)
+	{
 		int width = src.getWidth();
 		int height = src.getHeight();
 
@@ -70,33 +77,44 @@ public class GaussianFilter extends ConvolveFilter {
 	}
 
 	public static void convolveAndTranspose(Kernel kernel, int[] inPixels, int[] outPixels, int width, int height,
-			boolean alpha, int edgeAction) {
+			boolean alpha, int edgeAction)
+	{
 		float[] matrix = kernel.getKernelData(null);
 		int cols = kernel.getWidth();
 		int cols2 = cols / 2;
 
-		for (int y = 0; y < height; y++) {
+		for (int y = 0; y < height; y++)
+		{
 			int index = y;
 			int ioffset = y * width;
-			for (int x = 0; x < width; x++) {
+			for (int x = 0; x < width; x++)
+			{
 				float r = 0, g = 0, b = 0, a = 0;
 				int moffset = cols2;
-				for (int col = -cols2; col <= cols2; col++) {
+				for (int col = -cols2; col <= cols2; col++)
+				{
 					float f = matrix[moffset + col];
 
-					if (f != 0) {
+					if (f != 0)
+					{
 						int ix = x + col;
-						if (ix < 0) {
+						if (ix < 0)
+						{
 							if (edgeAction == CLAMP_EDGES)
 								ix = 0;
-							else if (edgeAction == WRAP_EDGES)
-								ix = (x + width) % width;
-						} else if (ix >= width) {
-							if (edgeAction == CLAMP_EDGES)
-								ix = width - 1;
-							else if (edgeAction == WRAP_EDGES)
-								ix = (x + width) % width;
+							else
+								if (edgeAction == WRAP_EDGES)
+									ix = (x + width) % width;
 						}
+						else
+							if (ix >= width)
+							{
+								if (edgeAction == CLAMP_EDGES)
+									ix = width - 1;
+								else
+									if (edgeAction == WRAP_EDGES)
+										ix = (x + width) % width;
+							}
 						int rgb = inPixels[ioffset + ix];
 						a += f * ((rgb >> 24) & 0xff);
 						r += f * ((rgb >> 16) & 0xff);
@@ -117,7 +135,8 @@ public class GaussianFilter extends ConvolveFilter {
 	/**
 	 * Make a Gaussian blur kernel.
 	 */
-	public static Kernel makeKernel(float radius) {
+	public static Kernel makeKernel(float radius)
+	{
 		int r = (int) Math.ceil(radius);
 		int rows = r * 2 + 1;
 		float[] matrix = new float[rows];
@@ -128,7 +147,8 @@ public class GaussianFilter extends ConvolveFilter {
 		float radius2 = radius * radius;
 		float total = 0;
 		int index = 0;
-		for (int row = -r; row <= r; row++) {
+		for (int row = -r; row <= r; row++)
+		{
 			float distance = row * row;
 			if (distance > radius2)
 				matrix[index] = 0;
@@ -143,7 +163,8 @@ public class GaussianFilter extends ConvolveFilter {
 		return new Kernel(rows, 1, matrix);
 	}
 
-	public String toString() {
+	public String toString()
+	{
 		return "Blur/Gaussian Blur...";
 	}
 }

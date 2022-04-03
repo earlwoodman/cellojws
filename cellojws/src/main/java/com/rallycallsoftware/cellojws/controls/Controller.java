@@ -1,28 +1,38 @@
 package com.rallycallsoftware.cellojws.controls;
 
-import com.rallycallsoftware.cellojws.dimensions.AbsDims;
 import com.rallycallsoftware.cellojws.general.core.Environment;
 import com.rallycallsoftware.cellojws.general.core.ScreenFactoryDispatcher;
-import com.rallycallsoftware.cellojws.windowing.Window;
-import com.rallycallsoftware.cellojws.windowing.WindowBean;
+import com.rallycallsoftware.cellojws.stock.Screen;
 import com.rallycallsoftware.cellojws.windowing.WindowManager;
 
-public abstract class Controller {
-	public static <T extends WindowBean, U extends Window<T>> Window<T> popup(final Class<U> clazz, final T bean, final AbsDims dims) {
-		final Window<T> window = getScreenFactoryDispatcher().getScreen(clazz, bean, dims);
-		getEnvironment().getWindowManager().showPopup(window);
-		return window;
+public abstract class Controller 
+{
+	public static <T> Screen popup(Class<?> clazz, T payload)
+	{
+		final Screen screen = getScreenFactoryDispatcher().getScreen(clazz, payload);
+		getEnvironment().getWindowManager().showPopup(screen);
+		return screen;
 	}
 
-	public static WindowManager getWindowManager() {
+	public static <T> Screen popup(Class<?> clazz)
+	{
+		final Screen screen = getScreenFactoryDispatcher().getScreen(clazz);
+		getEnvironment().getWindowManager().showPopup(screen);
+		return screen;
+	}
+
+	public static WindowManager getWindowManager()
+	{
 		return Environment.getEnvironment().getWindowManager();
 	}
-
-	public static Environment getEnvironment() {
+	
+	public static Environment getEnvironment()
+	{
 		return Environment.getEnvironment();
 	}
 
-	public static ScreenFactoryDispatcher getScreenFactoryDispatcher() {
+	public static ScreenFactoryDispatcher getScreenFactoryDispatcher()
+	{
 		return Environment.getEnvironment().getScreenFactoryDispatcher();
 	}
 

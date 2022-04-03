@@ -1,5 +1,6 @@
 package com.rallycallsoftware.cellojws.controls;
 
-public interface TransientControl {
-
+public interface TransientControl 
+{
+	void hidden();
 }

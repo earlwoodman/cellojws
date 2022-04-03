@@ -9,6 +9,7 @@ package com.rallycallsoftware.cellojws.general;
 
 import java.io.Serializable;
 
-public interface TurnTaker extends Serializable {
+public interface TurnTaker extends Serializable
+{
 	void takeTurn();
 }

@@ -2,13 +2,15 @@ package com.rallycallsoftware.cellojws.general.work;
 
 import com.rallycallsoftware.cellojws.general.core.Environment;
 
-public class ShowDemoWork implements Work {
+public class ShowDemoWork implements Work 
+{
 
 	@Override
-	public boolean doWork() {
+	public boolean doWork() 
+	{
 		final Environment gameEnvironment = Environment.getEnvironment();
-		// gameEnvironment.showDemo();
-
+		//gameEnvironment.showDemo();
+		
 		return true;
 	}
 

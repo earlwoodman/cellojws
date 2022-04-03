@@ -4,45 +4,54 @@ import java.util.List;
 
 import com.rallycallsoftware.cellojws.token.CommandToken;
 
-public class RadioButtonInfoBean {
+public class RadioButtonInfoBean 
+{
 	private List<Button> buttons;
-
+	
 	private Button clickedButton;
-
+	
 	private String caption;
-
+	
 	private CommandToken<?> token;
 
-	public List<Button> getButtons() {
+	public List<Button> getButtons() 
+	{	
 		return buttons;
 	}
 
-	public void setButtons(List<Button> buttons) {
+	public void setButtons(List<Button> buttons) 
+	{
 		this.buttons = buttons;
 	}
 
-	public Button getClickedButton() {
+	public Button getClickedButton() 
+	{
 		return clickedButton;
 	}
 
-	public void setClickedButton(Button clickedButton) {
+	public void setClickedButton(Button clickedButton) 
+	{
 		this.clickedButton = clickedButton;
 	}
 
-	public String getCaption() {
+	public String getCaption()
+	{
 		return caption;
 	}
 
-	public void setCaption(String caption) {
+	public void setCaption(String caption)
+	{
 		this.caption = caption;
 	}
 
-	public CommandToken<?> getToken() {
+	public CommandToken<?> getToken()
+	{
 		return token;
 	}
 
-	public void setToken(CommandToken<?> token) {
+	public void setToken(CommandToken<?> token)
+	{
 		this.token = token;
-	}
-
+	}	
+	
 }

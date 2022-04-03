@@ -9,32 +9,39 @@ package com.rallycallsoftware.cellojws.token;
 
 import java.util.function.Consumer;
 
-public class CommandToken<E> {
 
-	private Consumer<CommandToken<E>> action;
+public class CommandToken<E>
+{
+  
+    private Consumer<CommandToken<E>> action;
+    
+    private E payload;
+    
+    public CommandToken(final Consumer<CommandToken<E>> action, final E payload)
+    {
+    	this.action = action;
+    	this.payload = payload;
+    }
+    
+	public CommandToken(final Consumer<CommandToken<E>> action)
+    {
+    	this.action = action;
+    }
+    
+	public boolean execute() 
+    {
+    	action.accept(this);
+    	
+    	return true;
+    }
 
-	private E payload;
-
-	public CommandToken(final Consumer<CommandToken<E>> action, final E payload) {
-		this.action = action;
-		this.payload = payload;
-	}
-
-	public CommandToken(final Consumer<CommandToken<E>> action) {
-		this.action = action;
-	}
-
-	public boolean execute() {
-		action.accept(this);
-
-		return true;
-	}
-
-	public E getPayload() {
+	public E getPayload()
+	{
 		return payload;
 	}
 
-	public void setPayload(E payload) {
+	public void setPayload(E payload)
+	{
 		this.payload = payload;
 	}
 

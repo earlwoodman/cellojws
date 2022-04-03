@@ -7,6 +7,11 @@
 
 package com.rallycallsoftware.cellojws.logging;
 
-public enum WorkerLogLevels {
-	info, debug, warn, error, fatal
+public enum WorkerLogLevels
+{
+    info,
+    debug,
+    warn,
+    error,
+    fatal
 }

@@ -1,24 +1,29 @@
 package com.rallycallsoftware.cellojws.controls;
 
-public class DragDropBean {
-	private Control target;
+public class DragDropBean<T extends Control, U extends Control> 
+{
+	private U target;
+	
+	private T dragging;
 
-	private Control dragging;
-
-	public Control getTarget() {
+	public U getTarget() 
+	{
 		return target;
 	}
 
-	public void setTarget(Control target) {
+	public void setTarget(U target) 
+	{
 		this.target = target;
 	}
 
-	public Control getDragging() {
+	public T getDragging() 
+	{
 		return dragging;
 	}
 
-	public void setDragging(Control dragging) {
+	public void setDragging(T dragging) 
+	{
 		this.dragging = dragging;
-	}
-
+	}	
+	
 }

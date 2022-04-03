@@ -1,5 +1,7 @@
 package com.rallycallsoftware.cellojws.general;
 
-public interface Tree {
+
+public interface Tree
+{
 	TreeNode getRoot();
 }

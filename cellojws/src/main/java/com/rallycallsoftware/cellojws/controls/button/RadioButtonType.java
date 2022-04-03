@@ -1,49 +1,123 @@
 package com.rallycallsoftware.cellojws.controls.button;
 
-import com.rallycallsoftware.cellojws.general.image.Image;
-import com.rallycallsoftware.cellojws.general.image.ImageFactory;
+import java.awt.Color;
 
-public class RadioButtonType extends FixedSizeButtonType {
+import com.rallycallsoftware.cellojws.adapter.Graphics;
+import com.rallycallsoftware.cellojws.controls.Control;
+import com.rallycallsoftware.cellojws.dimensions.AbsDims;
+
+public class RadioButtonType extends FixedSizeButtonType 
+{
 	private boolean checked;
 
-	public RadioButtonType(final boolean checked) {
+	private AbsDims savedDims;
+
+	private AbsDims innerDims;
+	
+	private static Integer size = null;
+		
+	private boolean circle;
+
+	private AbsDims outerDims;
+	
+	public RadioButtonType(final boolean checked, final boolean circle)
+	{
+		confirmSize();
 		this.checked = checked;
+		this.circle = circle;
+	}
+		
+	private void confirmSize()
+	{
+		if( size == null )
+		{
+			size = SmallButtonType.getInstance().getHeight();
+		}
 	}
 
-	public RadioButtonType() {
+	public RadioButtonType()
+	{
+		confirmSize();
 		this.checked = false;
 	}
 
 	@Override
-	public Image getNormal() {
-		return checked ? ImageFactory.getCheckboxChecked() : ImageFactory.getCheckboxUnchecked();
+	public int getHeight()
+	{
+		return size;
 	}
 
 	@Override
-	public Image getMouseover() {
-		return ImageFactory.getCheckboxChecked();
+	public int getWidth() 
+	{
+		return size;
 	}
 
-	@Override
-	public Image getMousedown() {
-		return ImageFactory.getCheckboxChecked();
-	}
-
-	@Override
-	public int getHeight() {
-		return ImageFactory.getCheckboxChecked().getHeight();
-	}
-
-	@Override
-	public int getWidth() {
-		return ImageFactory.getCheckboxChecked().getWidth();
-	}
-
-	public void setChecked(boolean checked) {
+	public void setChecked(boolean checked) 
+	{
 		this.checked = checked;
 	}
 
-	public boolean isChecked() {
+	public boolean isChecked()
+	{
 		return this.checked;
 	}
+
+	public void toggleChecked() 
+	{
+		this.checked = !this.checked;
+	}
+
+	@Override
+	public void renderMousedown(final Graphics graphics, final AbsDims dims, final Color colour)
+	{
+		drawRadioButton(graphics, dims, colour);
+	}
+
+	private void drawRadioButton(final Graphics graphics, final AbsDims dims, final Color colour)
+	{
+		if( !dims.equals(savedDims) )
+		{
+			savedDims = dims;
+			outerDims = savedDims.makeCopy();
+			outerDims.right = outerDims.getAbsHeight() + outerDims.left;
+			innerDims = outerDims.makeCopy();
+			innerDims.shrink(Math.round(dims.getAbsHeight() / 5F));
+		}
+
+		if( circle )
+		{
+			graphics.drawSolidCircle(outerDims, colour);
+			if( checked )
+			{
+				graphics.drawSolidCircle(innerDims, colour.brighter().brighter());
+			}
+		}
+		else
+		{
+			graphics.drawSolidRect(outerDims, colour);
+			if( checked )
+			{
+				graphics.drawSolidRect(innerDims, colour.brighter().brighter());
+			}			
+		}
+	}
+
+	@Override
+	public void renderNormal(final Graphics graphics, final AbsDims dims, final Color colour) 
+	{
+		drawRadioButton(graphics, dims, colour);
+	}
+
+	@Override
+	public void renderMouseover(final Graphics graphics, final AbsDims dims, final Color colour)
+	{
+		drawRadioButton(graphics, dims, colour);
+	}
+
+	public static int getRadioGap()
+	{
+		return Control.getStdGap(); 
+	}
+	
 }

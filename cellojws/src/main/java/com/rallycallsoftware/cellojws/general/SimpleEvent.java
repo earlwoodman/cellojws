@@ -7,15 +7,17 @@
 
 package com.rallycallsoftware.cellojws.general;
 
-public class SimpleEvent extends Event {
+public class SimpleEvent extends Event
+{
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 200L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 200L;
 
-	public SimpleEvent(final EventLevel level, final String text, final DateTime time) {
-		super(level, text, time);
-	}
+    public SimpleEvent(final EventLevel level, final String text, final DateTime time)
+    {
+        super(level, text, time);
+    }
 
 }

@@ -7,6 +7,7 @@
 
 package com.rallycallsoftware.cellojws.general;
 
-public interface HumanController extends Controller {
-
+public interface HumanController extends Controller
+{
+	
 }

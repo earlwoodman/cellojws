@@ -1,6 +1,7 @@
 package com.rallycallsoftware.cellojws.controls;
 
-public class MissingDimensionsException extends RuntimeException {
+public class MissingDimensionsException extends RuntimeException
+{
 
 	/**
 	 * 

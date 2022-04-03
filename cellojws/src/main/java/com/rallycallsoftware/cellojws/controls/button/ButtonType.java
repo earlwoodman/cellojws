@@ -1,13 +1,75 @@
 package com.rallycallsoftware.cellojws.controls.button;
 
-import com.rallycallsoftware.cellojws.general.image.Image;
+import java.awt.Color;
 
-public abstract class ButtonType {
-	public abstract Image getNormal();
+import com.rallycallsoftware.cellojws.adapter.Graphics;
+import com.rallycallsoftware.cellojws.dimensions.AbsDims;
 
-	public abstract Image getMouseover();
+public abstract class ButtonType
+{
+	public abstract int getHeight();	
 
-	public abstract Image getMousedown();
+	private static final int highlightAmt = 6;
+	
+	private Color normalHighlightColour = null;
+	
+	private Color mouseoverHighlightColour = null;
+	
+	private Color mouseDownHighlightColour = null;
+	
+	public static final float highlightPercentage = 0.35F;
 
-	public abstract int getHeight();
+	public Color produceHighlightColour(Color colour) 
+	{
+		return new Color(
+				colour.getRed() + highlightAmt, 
+				colour.getGreen() + highlightAmt, 
+				colour.getBlue() + highlightAmt);
+	}
+	
+	public void renderMousedown(Graphics graphics, AbsDims dims, Color colour)
+	{
+		graphics.drawSolidRect(dims, colour);
+
+		if( mouseDownHighlightColour == null )
+		{
+			mouseDownHighlightColour = produceHighlightColour(colour); 	
+		}
+
+		graphics.drawSolidRect(dims.left, 
+							   dims.top, 
+							   dims.right, 
+							   dims.top + Math.round(dims.getAbsHeight() * highlightPercentage), mouseDownHighlightColour);
+	}
+
+	public void renderNormal(Graphics graphics, AbsDims dims, Color colour)
+	{
+		graphics.drawSolidRect(dims, colour);
+		
+		if( normalHighlightColour == null )
+		{
+			normalHighlightColour = produceHighlightColour(colour);	
+		}		
+		
+		graphics.drawSolidRect(dims.left, 
+							   dims.top, 
+							   dims.right, 
+							   dims.top + Math.round(dims.getAbsHeight() * highlightPercentage), normalHighlightColour);
+	}
+
+	public void renderMouseover(Graphics graphics, AbsDims dims, Color colour)
+	{
+		graphics.drawSolidRect(dims, colour);
+				
+		if( mouseoverHighlightColour == null )
+		{
+			mouseoverHighlightColour = produceHighlightColour(colour);	
+		}		
+
+		graphics.drawSolidRect(dims.left, 
+							   dims.top, 
+							   dims.right, 
+							   dims.top + Math.round(dims.getAbsHeight() * highlightPercentage), mouseoverHighlightColour);
+	}
+	 
 }

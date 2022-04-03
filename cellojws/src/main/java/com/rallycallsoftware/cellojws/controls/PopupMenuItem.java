@@ -2,30 +2,37 @@ package com.rallycallsoftware.cellojws.controls;
 
 import com.rallycallsoftware.cellojws.token.CommandToken;
 
-public class PopupMenuItem<T> {
+public class PopupMenuItem<T> 
+{
 
 	private String message;
-
+	
 	private CommandToken<T> token;
-
-	public PopupMenuItem() {
-
+	
+	public PopupMenuItem() 
+	{
+		
 	}
 
-	public String getMessage() {
+	public String getMessage() 
+	{
 		return message;
 	}
 
-	public void setMessage(String message) {
+	public void setMessage(String message) 
+	{
 		this.message = message;
 	}
 
-	public CommandToken<T> getToken() {
+	public CommandToken<T> getToken() 
+	{
 		return token;
 	}
 
-	public void setToken(CommandToken<T> token) {
+	public void setToken(CommandToken<T> token) 
+	{
 		this.token = token;
 	}
-
+	
+	
 }

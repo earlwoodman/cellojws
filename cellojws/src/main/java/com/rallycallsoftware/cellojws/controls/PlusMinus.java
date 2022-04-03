@@ -6,111 +6,218 @@ import java.text.DecimalFormat;
 
 import com.rallycallsoftware.cellojws.adapter.Graphics;
 import com.rallycallsoftware.cellojws.controls.button.BasicButton;
+import com.rallycallsoftware.cellojws.controls.button.BigDownScrollButtonType;
+import com.rallycallsoftware.cellojws.controls.button.BigUpScrollButtonType;
 import com.rallycallsoftware.cellojws.controls.button.Button;
 import com.rallycallsoftware.cellojws.controls.button.DownScrollButtonType;
 import com.rallycallsoftware.cellojws.controls.button.UpScrollButtonType;
 import com.rallycallsoftware.cellojws.dimensions.AbsDims;
 import com.rallycallsoftware.cellojws.general.Justification;
+import com.rallycallsoftware.cellojws.general.core.Environment;
 import com.rallycallsoftware.cellojws.token.CommandToken;
 
-public class PlusMinus extends Control {
 
+public class PlusMinus extends Control
+{	
+	
 	private Button down;
-
+	
 	private Button up;
-
+	
+	private Button downBig;
+	
+	private Button upBig;
+	
 	private Label caption;
-
+	
 	private int value;
-
+	
 	private int topIndex;
-
+	
 	private int bottomIndex;
-
+	
 	private int step;
+	
+	private int bigStep;
 
 	private boolean formatAsDollars = false;
-
-	public PlusMinus(final AbsDims dim, final int topIndex_, final int bottomIndex_, final int value_,
-			final CommandToken<?> token, final int step_, final boolean formatAsDollars_) {
+	
+	public PlusMinus(final AbsDims dim, final int topIndex_, final int bottomIndex_, final int value_, final CommandToken<?> token, 
+			final int step_, final boolean formatAsDollars_, final String prefix, final int bigStep) 
+	{
 		super(dim, token);
-
+		
 		value = value_;
 		bottomIndex = bottomIndex_;
 		topIndex = topIndex_;
 		step = step_;
-
+		this.bigStep = bigStep;
+		
 		formatAsDollars = formatAsDollars_;
+		
+		if( bigStep != step_ )
+		{
+			upBig = new BasicButton(
+					BigUpScrollButtonType.getInstance(), 
+					"", 
+					new CommandToken<PlusMinus>(ControlController::upBig, this), 
+					new Point(dim.getAbsWidth() - VerticalScrollBar.getControlBoxHeight(), 0));
+			addControl(prefix + "upBig", upBig);
+			
+			downBig = new BasicButton(
+					BigDownScrollButtonType.getInstance(), 
+					"", 
+					new CommandToken<PlusMinus>(ControlController::downBig, this), 
+					new Point(0, 0));
+			addControl(prefix + "downBig", downBig);
 
-		up = new BasicButton(UpScrollButtonType.getInstance(), "",
-				new CommandToken<PlusMinus>(ControlController::up, this),
-				new Point(dim.getAbsWidth() - VerticalScrollBar.getControlBoxHeight(), 0));
-		addControl(up);
-
-		down = new BasicButton(DownScrollButtonType.getInstance(), "",
-				new CommandToken<PlusMinus>(ControlController::down, this), new Point(0, 0));
-		addControl(down);
-
-		final AbsDims captionDims = new AbsDims(VerticalScrollBar.getControlBoxHeight(), 0,
-				dim.getAbsWidth() - VerticalScrollBar.getControlBoxHeight() * 2,
+			up = new BasicButton(
+					UpScrollButtonType.getInstance(), 
+					"", 
+					new CommandToken<PlusMinus>(ControlController::up, this), 
+					new Point(dim.getAbsWidth() - VerticalScrollBar.getControlBoxHeight() * 2 - Environment.verySmallGap(), 0));
+			addControl(prefix + "up", up);
+			
+			down = new BasicButton(
+					DownScrollButtonType.getInstance(), 
+					"", 
+					new CommandToken<PlusMinus>(ControlController::down, this), 
+					new Point(VerticalScrollBar.getControlBoxHeight() + Environment.verySmallGap(), 0));
+			addControl(prefix + "down", down);
+		}
+		else
+		{
+			up = new BasicButton(
+					UpScrollButtonType.getInstance(), 
+					"", 
+					new CommandToken<PlusMinus>(ControlController::up, this), 
+					new Point(dim.getAbsWidth() - VerticalScrollBar.getControlBoxHeight(), 0));
+			addControl(prefix + "up", up);
+			
+			down = new BasicButton(
+					DownScrollButtonType.getInstance(), 
+					"", 
+					new CommandToken<PlusMinus>(ControlController::down, this), 
+					new Point(0, 0));
+			addControl(prefix + "down", down);
+		}
+		
+		final AbsDims captionDims = new AbsDims(
+				VerticalScrollBar.getControlBoxHeight(), 
+				0, 
+				dim.getAbsWidth() - VerticalScrollBar.getControlBoxHeight() * 2, 
 				VerticalScrollBar.getControlBoxHeight());
 		caption = new Label(captionDims, "");
 		caption.setJustification(Justification.Center);
 		redrawCaption();
 		addControl(caption);
+		
+	}
+
+	@Override
+	public void render(Graphics graphics, boolean mousedown) 
+	{	
 
 	}
 
 	@Override
-	public void render(Graphics graphics, boolean mousedown) {
-
-	}
-
-	@Override
-	public boolean doSpecialClickActions(int x, int y) {
+	public boolean doSpecialClickActions(int x, int y) 
+	{	
 		return true;
 	}
 
-	public void decrement() {
-		if (value >= bottomIndex + step) {
+	public void decrement() 
+	{	
+		if( value >= bottomIndex + step )
+		{
 			value -= step;
-		} else if (value >= bottomIndex) {
+		}
+		else if( value >= bottomIndex )
+		{
 			value = bottomIndex;
 		}
 		redrawCaption();
 	}
 
-	public void increment() {
-		if (value <= topIndex - step) {
+	public void increment() 
+	{
+		if( value <= topIndex - step )
+		{
 			value += step;
-		} else if (value <= topIndex) {
+		}
+		else if( value <= topIndex )
+		{
 			value = topIndex;
+		}
+		redrawCaption();		
+	}
+
+	public void decrementBig() 
+	{	
+		if( value >= bottomIndex + bigStep )
+		{
+			value -= bigStep;
+		}
+		else if( value >= bottomIndex )
+		{
+			value = bottomIndex;
 		}
 		redrawCaption();
 	}
 
-	public int getValue() {
+	public void incrementBig() 
+	{
+		if( value <= topIndex - bigStep )
+		{
+			value += bigStep;
+		}
+		else if( value <= topIndex )
+		{
+			value = topIndex;
+		}
+		redrawCaption();		
+	}
+
+	public int getValue() 
+	{
 		return value;
 	}
 
-	public void setValue(final int value_) {
+	public void setValue(final int value_) 
+	{
 		value = value_;
 		redrawCaption();
-
+		
 	}
 
-	private void redrawCaption() {
-		if (formatAsDollars) {
+	private void redrawCaption() 
+	{
+		if( formatAsDollars )
+		{
 			final DecimalFormat df1 = new DecimalFormat("$#,###.##");
-			caption.setText(df1.format((float) value / 1000000F) + "M");
-		} else {
+			caption.setText(df1.format((float)value/ 1000000F) + "M");
+		}
+		else
+		{
 			caption.setText(new Integer(value).toString());
 		}
 	}
 
 	@Override
-	public void processMouseWheel(MouseWheelEvent wheelEvent) {
-
+	public void processMouseWheel(MouseWheelEvent wheelEvent) 
+	{
+		
 	}
 
+	@Override
+	public void disable() 
+	{
+		super.disable();
+		
+		up.disable();
+		
+		down.disable();
+	}
+
+	
 }

@@ -4,13 +4,16 @@ import com.rallycallsoftware.cellojws.dimensions.AbsDims;
 import com.rallycallsoftware.cellojws.general.image.Image;
 import com.rallycallsoftware.cellojws.token.CommandToken;
 
-public abstract class CalendarObject extends Control {
+
+public abstract class CalendarObject extends Control 
+{
 
 	private int day;
-
+	
 	private Control image;
-
-	public CalendarObject(final AbsDims dim, final CommandToken<?> token, final Image image_, final int day_) {
+	
+	public CalendarObject(final AbsDims dim, final CommandToken<?> token, final Image image_, final int day_) 
+	{		
 		super(dim, token);
 		image = new Control(dim.makeCopy());
 		image.setImage(image_);
@@ -18,19 +21,23 @@ public abstract class CalendarObject extends Control {
 		addControl(image);
 	}
 
-	public int getDay() {
+	public int getDay() 
+	{
 		return day;
 	}
 
-	public void setDay(int day) {
+	public void setDay(int day) 
+	{
 		this.day = day;
 	}
 
-	public void setImageDimensions(AbsDims imageDims) {
+	public void setImageDimensions(AbsDims imageDims) 
+	{
 		image.setDimensions(imageDims);
 	}
 
-	public Control getImageControl() {
+	public Control getImageControl() 
+	{
 		return image;
 	}
 

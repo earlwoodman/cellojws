@@ -1,5 +1,8 @@
 package com.rallycallsoftware.cellojws.general;
 
-public enum Justification {
-	Left, Center, Right
+public enum Justification
+{
+    Left,
+    Center,
+    Right
 }

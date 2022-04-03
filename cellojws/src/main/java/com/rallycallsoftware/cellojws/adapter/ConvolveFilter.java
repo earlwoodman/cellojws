@@ -4,32 +4,37 @@
 
 package com.rallycallsoftware.cellojws.adapter;
 
-import java.awt.*;
-import java.awt.image.*;
-import java.awt.geom.*;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.Kernel;
 
 /**
  * A filter which applies a convolution kernel to an image.
  * 
  * @author Jerry Huxtable
  */
-public class ConvolveFilter extends AbstractBufferedImageOp {
+public class ConvolveFilter extends AbstractBufferedImageOp
+{
 
 	static final long serialVersionUID = 2239251672685254626L;
 
-	public static int ZERO_EDGES = 0;
-	public static int CLAMP_EDGES = 1;
-	public static int WRAP_EDGES = 2;
+	public static int	ZERO_EDGES	= 0;
+	public static int	CLAMP_EDGES	= 1;
+	public static int	WRAP_EDGES	= 2;
 
-	protected Kernel kernel = null;
-	public boolean alpha = true;
-	private int edgeAction = CLAMP_EDGES;
+	protected Kernel	kernel		= null;
+	public boolean		alpha		= true;
+	private int			edgeAction	= CLAMP_EDGES;
 
 	/**
-	 * Construct a filter with a null kernel. This is only useful if you're
-	 * going to change the kernel later on.
+	 * Construct a filter with a null kernel. This is only useful if you're going to change the kernel later on.
 	 */
-	public ConvolveFilter() {
+	public ConvolveFilter()
+	{
 		this(new float[9]);
 	}
 
@@ -39,7 +44,8 @@ public class ConvolveFilter extends AbstractBufferedImageOp {
 	 * @param matrix
 	 *            an array of 9 floats containing the kernel
 	 */
-	public ConvolveFilter(float[] matrix) {
+	public ConvolveFilter(float[] matrix)
+	{
 		this(new Kernel(3, 3, matrix));
 	}
 
@@ -53,7 +59,8 @@ public class ConvolveFilter extends AbstractBufferedImageOp {
 	 * @param matrix
 	 *            an array of rows*cols floats containing the kernel
 	 */
-	public ConvolveFilter(int rows, int cols, float[] matrix) {
+	public ConvolveFilter(int rows, int cols, float[] matrix)
+	{
 		this(new Kernel(cols, rows, matrix));
 	}
 
@@ -63,27 +70,33 @@ public class ConvolveFilter extends AbstractBufferedImageOp {
 	 * @param matrix
 	 *            an array of 9 floats containing the kernel
 	 */
-	public ConvolveFilter(Kernel kernel) {
+	public ConvolveFilter(Kernel kernel)
+	{
 		this.kernel = kernel;
 	}
 
-	public void setKernel(Kernel kernel) {
+	public void setKernel(Kernel kernel)
+	{
 		this.kernel = kernel;
 	}
 
-	public Kernel getKernel() {
+	public Kernel getKernel()
+	{
 		return kernel;
 	}
 
-	public void setEdgeAction(int edgeAction) {
+	public void setEdgeAction(int edgeAction)
+	{
 		this.edgeAction = edgeAction;
 	}
 
-	public int getEdgeAction() {
+	public int getEdgeAction()
+	{
 		return edgeAction;
 	}
 
-	public BufferedImage filter(BufferedImage src, BufferedImage dst) {
+	public BufferedImage filter(BufferedImage src, BufferedImage dst)
+	{
 		int width = src.getWidth();
 		int height = src.getHeight();
 
@@ -100,47 +113,55 @@ public class ConvolveFilter extends AbstractBufferedImageOp {
 		return dst;
 	}
 
-	public BufferedImage createCompatibleDestImage(BufferedImage src, ColorModel dstCM) {
+	public BufferedImage createCompatibleDestImage(BufferedImage src, ColorModel dstCM)
+	{
 		if (dstCM == null)
 			dstCM = src.getColorModel();
 		return new BufferedImage(dstCM, dstCM.createCompatibleWritableRaster(src.getWidth(), src.getHeight()),
 				dstCM.isAlphaPremultiplied(), null);
 	}
 
-	public Rectangle2D getBounds2D(BufferedImage src) {
+	public Rectangle2D getBounds2D(BufferedImage src)
+	{
 		return new Rectangle(0, 0, src.getWidth(), src.getHeight());
 	}
 
-	public Point2D getPoint2D(Point2D srcPt, Point2D dstPt) {
+	public Point2D getPoint2D(Point2D srcPt, Point2D dstPt)
+	{
 		if (dstPt == null)
 			dstPt = new Point2D.Double();
 		dstPt.setLocation(srcPt.getX(), srcPt.getY());
 		return dstPt;
 	}
 
-	public RenderingHints getRenderingHints() {
+	public RenderingHints getRenderingHints()
+	{
 		return null;
 	}
 
-	public static void convolve(Kernel kernel, int[] inPixels, int[] outPixels, int width, int height, int edgeAction) {
+	public static void convolve(Kernel kernel, int[] inPixels, int[] outPixels, int width, int height, int edgeAction)
+	{
 		convolve(kernel, inPixels, outPixels, width, height, true, edgeAction);
 	}
 
 	public static void convolve(Kernel kernel, int[] inPixels, int[] outPixels, int width, int height, boolean alpha,
-			int edgeAction) {
+			int edgeAction)
+	{
 		if (kernel.getHeight() == 1)
 			convolveH(kernel, inPixels, outPixels, width, height, alpha, edgeAction);
-		else if (kernel.getWidth() == 1)
-			convolveV(kernel, inPixels, outPixels, width, height, alpha, edgeAction);
 		else
-			convolveHV(kernel, inPixels, outPixels, width, height, alpha, edgeAction);
+			if (kernel.getWidth() == 1)
+				convolveV(kernel, inPixels, outPixels, width, height, alpha, edgeAction);
+			else
+				convolveHV(kernel, inPixels, outPixels, width, height, alpha, edgeAction);
 	}
 
 	/**
 	 * Convolve with a 2D kernel
 	 */
 	public static void convolveHV(Kernel kernel, int[] inPixels, int[] outPixels, int width, int height, boolean alpha,
-			int edgeAction) {
+			int edgeAction)
+	{
 		int index = 0;
 		float[] matrix = kernel.getKernelData(null);
 		int rows = kernel.getHeight();
@@ -148,34 +169,43 @@ public class ConvolveFilter extends AbstractBufferedImageOp {
 		int rows2 = rows / 2;
 		int cols2 = cols / 2;
 
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
+		for (int y = 0; y < height; y++)
+		{
+			for (int x = 0; x < width; x++)
+			{
 				float r = 0, g = 0, b = 0, a = 0;
 
-				for (int row = -rows2; row <= rows2; row++) {
+				for (int row = -rows2; row <= rows2; row++)
+				{
 					int iy = y + row;
 					int ioffset;
 					if (0 <= iy && iy < height)
 						ioffset = iy * width;
-					else if (edgeAction == CLAMP_EDGES)
-						ioffset = y * width;
-					else if (edgeAction == WRAP_EDGES)
-						ioffset = ((iy + height) % height) * width;
 					else
-						continue;
+						if (edgeAction == CLAMP_EDGES)
+							ioffset = y * width;
+						else
+							if (edgeAction == WRAP_EDGES)
+								ioffset = ((iy + height) % height) * width;
+							else
+								continue;
 					int moffset = cols * (row + rows2) + cols2;
-					for (int col = -cols2; col <= cols2; col++) {
+					for (int col = -cols2; col <= cols2; col++)
+					{
 						float f = matrix[moffset + col];
 
-						if (f != 0) {
+						if (f != 0)
+						{
 							int ix = x + col;
-							if (!(0 <= ix && ix < width)) {
+							if (!(0 <= ix && ix < width))
+							{
 								if (edgeAction == CLAMP_EDGES)
 									ix = x;
-								else if (edgeAction == WRAP_EDGES)
-									ix = (x + width) % width;
 								else
-									continue;
+									if (edgeAction == WRAP_EDGES)
+										ix = (x + width) % width;
+									else
+										continue;
 							}
 							int rgb = inPixels[ioffset + ix];
 							a += f * ((rgb >> 24) & 0xff);
@@ -198,33 +228,44 @@ public class ConvolveFilter extends AbstractBufferedImageOp {
 	 * Convolve with a kernel consisting of one row
 	 */
 	public static void convolveH(Kernel kernel, int[] inPixels, int[] outPixels, int width, int height, boolean alpha,
-			int edgeAction) {
+			int edgeAction)
+	{
 		int index = 0;
 		float[] matrix = kernel.getKernelData(null);
 		int cols = kernel.getWidth();
 		int cols2 = cols / 2;
 
-		for (int y = 0; y < height; y++) {
+		for (int y = 0; y < height; y++)
+		{
 			int ioffset = y * width;
-			for (int x = 0; x < width; x++) {
+			for (int x = 0; x < width; x++)
+			{
 				float r = 0, g = 0, b = 0, a = 0;
 				int moffset = cols2;
-				for (int col = -cols2; col <= cols2; col++) {
+				for (int col = -cols2; col <= cols2; col++)
+				{
 					float f = matrix[moffset + col];
 
-					if (f != 0) {
+					if (f != 0)
+					{
 						int ix = x + col;
-						if (ix < 0) {
+						if (ix < 0)
+						{
 							if (edgeAction == CLAMP_EDGES)
 								ix = 0;
-							else if (edgeAction == WRAP_EDGES)
-								ix = (x + width) % width;
-						} else if (ix >= width) {
-							if (edgeAction == CLAMP_EDGES)
-								ix = width - 1;
-							else if (edgeAction == WRAP_EDGES)
-								ix = (x + width) % width;
+							else
+								if (edgeAction == WRAP_EDGES)
+									ix = (x + width) % width;
 						}
+						else
+							if (ix >= width)
+							{
+								if (edgeAction == CLAMP_EDGES)
+									ix = width - 1;
+								else
+									if (edgeAction == WRAP_EDGES)
+										ix = (x + width) % width;
+							}
 						int rgb = inPixels[ioffset + ix];
 						a += f * ((rgb >> 24) & 0xff);
 						r += f * ((rgb >> 16) & 0xff);
@@ -245,39 +286,51 @@ public class ConvolveFilter extends AbstractBufferedImageOp {
 	 * Convolve with a kernel consisting of one column
 	 */
 	public static void convolveV(Kernel kernel, int[] inPixels, int[] outPixels, int width, int height, boolean alpha,
-			int edgeAction) {
+			int edgeAction)
+	{
 		int index = 0;
 		float[] matrix = kernel.getKernelData(null);
 		int rows = kernel.getHeight();
 		int rows2 = rows / 2;
 
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
+		for (int y = 0; y < height; y++)
+		{
+			for (int x = 0; x < width; x++)
+			{
 				float r = 0, g = 0, b = 0, a = 0;
 
-				for (int row = -rows2; row <= rows2; row++) {
+				for (int row = -rows2; row <= rows2; row++)
+				{
 					int iy = y + row;
 					int ioffset;
-					if (iy < 0) {
+					if (iy < 0)
+					{
 						if (edgeAction == CLAMP_EDGES)
 							ioffset = 0;
-						else if (edgeAction == WRAP_EDGES)
-							ioffset = ((y + height) % height) * width;
+						else
+							if (edgeAction == WRAP_EDGES)
+								ioffset = ((y + height) % height) * width;
+							else
+								ioffset = iy * width;
+					}
+					else
+						if (iy >= height)
+						{
+							if (edgeAction == CLAMP_EDGES)
+								ioffset = (height - 1) * width;
+							else
+								if (edgeAction == WRAP_EDGES)
+									ioffset = ((y + height) % height) * width;
+								else
+									ioffset = iy * width;
+						}
 						else
 							ioffset = iy * width;
-					} else if (iy >= height) {
-						if (edgeAction == CLAMP_EDGES)
-							ioffset = (height - 1) * width;
-						else if (edgeAction == WRAP_EDGES)
-							ioffset = ((y + height) % height) * width;
-						else
-							ioffset = iy * width;
-					} else
-						ioffset = iy * width;
 
 					float f = matrix[row + rows2];
 
-					if (f != 0) {
+					if (f != 0)
+					{
 						int rgb = inPixels[ioffset + x];
 						a += f * ((rgb >> 24) & 0xff);
 						r += f * ((rgb >> 16) & 0xff);
@@ -294,7 +347,8 @@ public class ConvolveFilter extends AbstractBufferedImageOp {
 		}
 	}
 
-	public String toString() {
+	public String toString()
+	{
 		return "Blur/Convolve...";
 	}
 }

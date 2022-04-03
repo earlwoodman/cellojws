@@ -1,64 +1,76 @@
 package com.rallycallsoftware.cellojws.special;
 
 import java.awt.Color;
-import java.awt.event.MouseEvent;
 
 import com.rallycallsoftware.cellojws.adapter.Graphics;
-import com.rallycallsoftware.cellojws.controls.Control;
+import com.rallycallsoftware.cellojws.controls.Label;
 import com.rallycallsoftware.cellojws.dimensions.AbsDims;
 import com.rallycallsoftware.cellojws.general.core.Environment;
-import com.rallycallsoftware.cellojws.windowing.WindowManager;
 
-public class TextTooltip extends Tooltip {
+public class TextTooltip extends Tooltip 
+{
 	private static final long TOOLTIP_DISPLAY_WINDOW = 4000;
 
 	private String text;
 
-	private Environment environment;
-
-	public TextTooltip(final Control owner) {
-		super(owner);
-		environment = Environment.getEnvironment();
+	private Label label;
+	
+	public TextTooltip()
+	{
+		super();
+		initialize();
 	}
 
+	public TextTooltip(final String message)
+	{
+		initialize();
+		setText(message);
+	}
+
+	private void initialize()
+	{
+		label = new Label(null);
+		label.setDrawIfBlank(false);
+		label.setBackground(Color.black);
+		label.setSolidBackground(true);
+		label.setFontInfo(Environment.getToolTipFontInfo());
+		addControl(label);
+	}
+	
 	@Override
-	public long getTooltipDisplayLength() {
+	public long getTooltipDisplayLength() 
+	{
 		return TOOLTIP_DISPLAY_WINDOW;
 	}
 
 	@Override
-	public void renderTooltip(final WindowManager windowManager) {
-		final Graphics graphics = windowManager.getGraphics();
-
-		if (text != null && text.length() > 0) {
-			setTooltipDisplayTime(System.currentTimeMillis());
-
-			final MouseEvent lastMouseMoveEvent = windowManager.getLastMouseMoveEvent();
-
-			final int width = graphics.getTextWidth(text, environment.getToolTipFontInfo());
-			final int height = graphics.getTextHeight(environment.getToolTipFontInfo());
-			final int x = lastMouseMoveEvent.getX();
-			final int y = lastMouseMoveEvent.getY();
-
-			final AbsDims tooltipDims = calculateDimensions(windowManager, x, y, width, height);
-
-			graphics.drawSolidRect(tooltipDims, Color.BLACK);
-			graphics.drawRect(tooltipDims);
-			graphics.setFontInfo(environment.getToolTipFontInfo());
-			graphics.drawText(text, tooltipDims.left, tooltipDims.top);
+	public void render(final Graphics graphics, final boolean mousedown) 
+	{
+		if( text != null && text.length() > 0 )
+		{
+			setHeight(graphics.getTextHeight(Environment.getToolTipFontInfo()));
+			setWidth(graphics.getTextWidth(text, Environment.getToolTipFontInfo()));
+    		final AbsDims tooltipDims = getWindowManager().calculateTooltipDims(this);
+    		
+    		setDimensions(tooltipDims);
+    		label.setDimensions(new AbsDims(0, 0, tooltipDims.getAbsWidth(), tooltipDims.getAbsHeight()));
 		}
 	}
 
-	public String getText() {
+	public String getText() 
+	{
 		return text;
 	}
 
-	public void setText(String text) {
+	public void setText(String text) 
+	{
 		this.text = text;
+		label.setText(text);
 	}
 
 	@Override
-	public void reset() {
+	public void reset()
+	{
 		setText("");
 	}
 
